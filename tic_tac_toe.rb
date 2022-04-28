@@ -1,30 +1,32 @@
 class Player
-  def initialize(name)
-    @name = name
-    @chess_symbol = 0
+  def initialize
+    @board = Board.new
+    print "What's Your Name?\n"
+    @name = gets.chomp
+    print "Enter a letter to represent your 'O' or 'X'\n"
+    @chess_symbol = gets.chomp
   end
 
   def player_move
-  end
-
-  def check_for_win
+    move = gets.chomp 
   end
 end
 
 class Board
   def initialize
-    @a = a
-    @b = b
-    @c = c
-    @d = d
-    @e = e
-    @f = f
-    @g = g
-    @h = h
-    @i = i
+    @a = 'a'
+    @b = 'b'
+    @c = 'c'
+    @d = 'd'
+    @e = 'e'
+    @f = 'f'
+    @g = 'g'
+    @h = 'h'
+    @i = 'i'
   end
 
   def display_board
+    puts "#{@a}|#{@b}|#{@c}\n#{@d}|#{@e}|#{@f}\n#{@g}|#{@h}|#{@i}"
   end
 end
 
