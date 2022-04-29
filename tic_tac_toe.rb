@@ -8,11 +8,21 @@ class Player
   end
 
   def player_move
-    move = gets.chomp 
+    @board.display_board
+    print "#{@name}, Choose where you want to put\n"
+    move = gets.chomp
+    @board.instance_variables.map {|test|
+      if @board.instance_variable_get(test) == move
+        @board.instance_variable_set(test, @chess_symbol)
+      end
+    }
+    @board.display_board
   end
 end
 
 class Board
+  attr_accessor :a, :b, :c, :d, :e, :f, :g, :h, :i
+
   def initialize
     @a = 'a'
     @b = 'b'
@@ -30,6 +40,17 @@ class Board
   end
 end
 
+player_1 = Player.new
+player_2 = Player.new
+
+i = 0
+while i < 9
+  player_1.player_move
+  player_2.player_move
+end
+
+
+
 # create player 1
 # ask for name
 # ask for chess symbol OR choose "O" or "X"
@@ -45,3 +66,5 @@ end
 # announce #{name} wins
 # }
 # }
+
+#Create Player 1 and 2 in just one instance(initialization)
