@@ -1,22 +1,56 @@
 class Player
   def initialize
     @board = Board.new
-    print "What's Your Name?\n"
-    @name = gets.chomp
-    print "Enter a letter to represent your 'O' or 'X'\n"
-    @chess_symbol = gets.chomp
+
+    print "Player 1, please input your name\n"
+
+    @player1_name = gets.chomp
+
+    print "Player 2, please input your name\n"
+
+    @player2_name = gets.chomp
   end
 
-  def player_move
+  def player_symbol
+    print "#{@player1_name}, please choose between 'O' or 'X'\n"
+
+    @player1_symbol = gets.chomp
+
+    @player2_symbol = ''
+
+    if @player1_symbol == 'O'
+      @player2_symbol = 'X'
+      print "#{@player2_symbol}, your symbol is 'X'\n"
+    else
+      @player2_symbol = 'O'
+      print "#{@player2_symbol}, your symbol is 'O'\n"
+    end
+  end
+
+  def player_move (player_name, symbol)
     @board.display_board
-    print "#{@name}, Choose where you want to put\n"
+
+    print "#{player_name}, Choose where you want to put\n"
+
     move = gets.chomp
-    @board.instance_variables.map {|test|
+
+    @board.instance_variables.map { |test|
       if @board.instance_variable_get(test) == move
-        @board.instance_variable_set(test, @chess_symbol)
+        @board.instance_variable_set(test, symbol)
       end
     }
-    @board.display_board
+  end
+
+  def start_game
+    i = 0
+
+    while i < 5
+      player_move(@player1_name, @player1_symbol)
+      @board.check_for_win(@player1_name)
+      player_move(@player2_name, @player2_symbol)
+      @board.check_for_win(@player2_name)
+      i += 1
+    end
   end
 end
 
@@ -38,16 +72,26 @@ class Board
   def display_board
     puts "#{@a}|#{@b}|#{@c}\n#{@d}|#{@e}|#{@f}\n#{@g}|#{@h}|#{@i}"
   end
+
+  def check_for_win(player)
+    array = [
+      [@a, @b, @c], [@a, @d, @g], [@b, @e, @h], [@c, @f, @i],
+      [@d, @e, @f], [@g, @h, @i], [@g, @e, @c], [@a, @e, @i]
+    ]
+    array.each { |combination|
+      if combination.uniq.length == 1
+        print "#{player} Win!"
+        exit
+      end
+    }
+  end
 end
 
-player_1 = Player.new
-player_2 = Player.new
+players = Player.new
+players.player_symbol
+players.start_game
 
-i = 0
-while i < 9
-  player_1.player_move
-  player_2.player_move
-end
+
 
 
 
@@ -56,7 +100,7 @@ end
 # ask for chess symbol OR choose "O" or "X"
 # Repeat above steps for player 2
 # create a board to play
-# announce that player 1 will start first 
+# announce that player 1 will start first
 
 # loop {
 #   player_move {
@@ -67,4 +111,4 @@ end
 # }
 # }
 
-#Create Player 1 and 2 in just one instance(initialization)
+# Create Player 1 and 2 in just one instance(initialization)
