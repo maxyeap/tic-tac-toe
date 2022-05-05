@@ -1,44 +1,27 @@
+require 'colorize'
+
+# This class represents player of the tic-tac-toe game
 class Player
-  attr_accessor :board
-
   def initialize
-    print "Player 1, please input your name\n"
-
-    @player1_name = gets.chomp
-
-    print "Player 2, please input your name\n"
-
-    @player2_name = gets.chomp
-  end
-
-  def player_marker
-    print "#{@player1_name}, please choose between 'O' or 'X'\n"
-
-    @player1_marker = gets.chomp
+    @player1_marker = ''
 
     @player2_marker = ''
 
-    if @player1_marker == 'O'
-      @player2_marker = 'X'
-      print "#{@player2_name}, your symbol is 'X'\n"
-    else
-      @player2_marker = 'O'
-      print "#{@player2_name}, your symbol is 'O'\n"
-    end
+    puts 'Player 1, please input your name', '(Alphabets only. Special characters will be removed)'.light_black
+
+    @player1_name = gets.chomp.gsub(/[^0-9A-Za-z]/, '')
+
+    puts 'Player 2, please input your name', '(Alphabets only. Special characters will be removed)'.light_black
+
+    @player2_name = gets.chomp.gsub(/[^0-9A-Za-z]/, '')
   end
 
-  def player_move (player_name, symbol)
-    Grid.display_grid
+  def player1_marker_set
+    puts "#{@player1_name}, please input 'O' or 'X' to select your markrt"
 
-    print "#{player_name}, Choose where you want to put\n"
+    @player1_marker = gets.chomp.upcase
 
-    move = gets.chomp
-
-    Grid.instance_variables.map { |test|
-      if Grid.instance_variable_get(test) == move
-        Grid.instance_variable_set(test, symbol)
-      end
-    }
+    player1_marker_check_exception
   end
 
   def start_game
@@ -52,8 +35,55 @@ class Player
       i += 1
     end
   end
+
+  private
+
+  def player1_marker_check_exception
+    begin
+      if (@player1_marker != 'O') && (@player1_marker != 'X')
+        raise 'Input is not valid. Please try again.'
+      end
+
+      player2_marker_set
+    rescue => e
+      puts e.to_s.red
+      player1_marker_set
+    end
+  end
+
+  def player2_marker_set
+    if @player1_marker == 'O'
+      @player2_marker = 'X'
+      puts "#{@player2_name}, your symbol is 'X'"
+    else
+      @player2_marker = 'O'
+      puts "#{@player2_name}, your symbol is 'O'"
+    end
+  end
+
+  def player_move (player_name, marker)
+    Grid.display_grid
+
+    puts "#{player_name}, please mark your move by inputting one of the letters from the grid"
+
+    move = gets.chomp.downcase
+
+    values_array = Grid.instance_variables.map { |value| Grid.instance_variable_get(value)}
+
+    if values_array.include?(move) == false
+      puts 'Input is not valid. Please try again.'.red
+      player_move(player_name, marker)
+    end
+
+    Grid.instance_variables.map do |value| 
+      if Grid.instance_variable_get(value) == move
+        Grid.instance_variable_set(value, marker)
+      end
+    end
+  end
 end
 
+# This class represents the grid that the tic-tac-toe game is going to be played on
 class Grid
   @a = 'a'
   @b = 'b'
@@ -70,72 +100,23 @@ class Grid
   end
 
   def self.display_grid
-    puts "\n#{@a}|#{@b}|#{@c}\n#{@d}|#{@e}|#{@f}\n#{@g}|#{@h}|#{@i}"
+    puts "#{@a}|#{@b}|#{@c}\n#{@d}|#{@e}|#{@f}\n#{@g}|#{@h}|#{@i}"
   end
 
   def self.check_for_win(player)
-    array = [
-      [@a, @b, @c], [@a, @d, @g], [@b, @e, @h], [@c, @f, @i],
-      [@d, @e, @f], [@g, @h, @i], [@g, @e, @c], [@a, @e, @i]
-    ]
+    array = [[@a, @b, @c], [@a, @d, @g], [@b, @e, @h], [@c, @f, @i],
+             [@d, @e, @f], [@g, @h, @i], [@g, @e, @c], [@a, @e, @i]]
 
-    array.each { |combination|
+    array.each do |combination|
       if combination.uniq.length == 1
-        self.display_grid
-        print "#{player} Win!"
+        display_grid
+        puts "#{player} is the winner!"
         exit
       end
-    }
+    end
   end
 end
 
 players = Player.new
-players.player_marker
+players.player1_marker_set
 players.start_game
-
-
-
-
-
-# # create player 1
-# # ask for name
-# # ask for chess symbol OR choose "O" or "X"
-# # Repeat above steps for player 2
-# # create a board to play
-# # announce that player 1 will start first
-
-# # loop {
-# #   player_move {
-# # player 1 input where he wants to put the chess
-# # board updates
-# # check for winning status (if abc, adg, etc. has the same value)
-# # announce #{name} wins
-# # }
-# # }
-
-# # Create Player 1 and 2 in just one instance(initialization)
-
-# # Change display board or board class into class method
-
-# # Player 1 Name
-# player_1 = player.new
-# print input name
-# player_name = gets
-# print [player_name] input name
-# player_marker = gets
-
-# # Display the grid
-# display_grid
-# # Player 1 Move
-# player1.move(1)
-# if variable.value contains 1 then variable = player_marker
-# Grid.display_grid
-
-# player_1.check_for_win
-# # Check for win
-# if combination == true then Grid.display_grid and announce player_name win
-# # Display the grid
-# # Player 2 Move
-# # Check for win
-
-# # Grid Class - Use class variables instead of instance variable. Don't create new instance for this class.
