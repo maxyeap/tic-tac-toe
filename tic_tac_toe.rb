@@ -27,12 +27,11 @@ class Player
   def start_game
     i = 0
 
-    while i < 5
+    while i.zero?
       player_move(@player1_name, @player1_marker)
       Grid.check_for_win(@player1_name)
       player_move(@player2_name, @player2_marker)
       Grid.check_for_win(@player2_name)
-      i += 1
     end
   end
 
@@ -107,10 +106,18 @@ class Grid
     array = [[@a, @b, @c], [@a, @d, @g], [@b, @e, @h], [@c, @f, @i],
              [@d, @e, @f], [@g, @h, @i], [@g, @e, @c], [@a, @e, @i]]
 
+    default_values_array = ("a".."i").to_a
+
+    values_array = Grid.instance_variables.map { |value| Grid.instance_variable_get(value) }
+
     array.each do |combination|
       if combination.uniq.length == 1
         display_grid
         puts "#{player} is the winner!"
+        exit
+      elsif (values_array - default_values_array).length == 9
+        display_grid
+        puts "It's a draw!"
         exit
       end
     end
